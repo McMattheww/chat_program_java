@@ -44,20 +44,26 @@ public class Server {
         public void run(){
 
             InputStream in = null;
+            OutputStream out = null;
             try {
                 in = clientSocket.getInputStream();
+                out = clientSocket.getOutputStream();
 
                 byte[] buffer = new byte[1024];
                 int bytes;
                 while ((bytes = in.read(buffer)) != -1) {
                     System.out.println(buffer);
                 }
+                out.write(1000);
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
             finally {
                 try {
+                    if (out != null){
+                        out.close();
+                    }
                     if (in != null) {
                         in.close();
                         clientSocket.close();
