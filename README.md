@@ -4,6 +4,7 @@
 ### Client:
 * Upon program start, the client attempts to connect to the chat server on the same host
 * Once connected, the client listens for input from the server, and prints it to the terminal
+* The client also creates another thread that waits for user input from the terminal, and sends it to the server
 
 ### Server:
 * Once started listens for conenctions on port 8888
@@ -13,7 +14,9 @@
 ## Todo:
 ### Client:
 * allow the clients to connect to a chat server that is not on localhost
-* Each client should have an additional thread, that listens for output messages the client is attempting to send to the server
+* allow user to enter their name upon starting the program
+* append name to the beginning of messages sent
 
 ### Server:
-*client thandler threads should redirect input they recieve from their client to the output of every active client socket
+* Server should have a data structure to track current active connection sockets
+* client handler threads should redirect input they recieve from their client to the output of every active client socket
