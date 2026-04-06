@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Server {
@@ -64,10 +65,14 @@ public class Server {
                 //create buffer to receive input from client
                 byte[] buffer = new byte[1024];
                 int bytes;
+                String line;
                 //while buffer read from client is not -1 size
                 while ((bytes = in.read(buffer)) != -1) {
                     //keep reading input and output to the server
-                    System.out.println(buffer);
+                    line = new String(buffer, StandardCharsets.UTF_8);
+                    System.out.println(line);
+                    //TODO: instead of printing input from clients to the terminal, the input should be redirected
+                    // to the output of every active client socket
                 }
             }
             catch (IOException e) {
