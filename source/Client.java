@@ -15,8 +15,19 @@ class Client {
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             DataInputStream in = new DataInputStream(socket.getInputStream());
 
+            Scanner sc = new Scanner(System.in);
+            String name = "";
+            while (name.isEmpty()){
+                System.out.println("Enter Name:");
+                name = sc.nextLine();
+            }
+            System.out.println("Welcome " + name);
+            //send the client's name to the server
+            out.write(name.getBytes(StandardCharsets.UTF_8));
+            out.flush();
+
             //create outputHandler and start thread to handle output to server
-            OutputHandler outputHandler = new OutputHandler(out);
+            OutputHandler outputHandler = new OutputHandler(out, sc);
             new Thread(outputHandler).start();
 
             //variables to hold the buffer
@@ -36,12 +47,16 @@ class Client {
 
     private static class OutputHandler implements Runnable {
         private final DataOutputStream output;
+        Scanner sc;
+        private String name;
 
-        public OutputHandler(DataOutputStream out){ this.output = out;}
+        public OutputHandler(DataOutputStream out, Scanner scan){
+            this.output = out;
+            this.sc = scan;
+        }
 
         public void run(){
             //keep getting input from user in loop, then send to output
-            Scanner sc = new Scanner(System.in);
 
 
             String line;

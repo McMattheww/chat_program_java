@@ -57,6 +57,7 @@ public class Server {
 
             InputStream in = null;
             OutputStream out = null;
+            String name;
             try {
                 //get client input/output byte streams
                 in = clientSocket.getInputStream();
@@ -66,6 +67,11 @@ public class Server {
                 byte[] buffer = new byte[1024];
                 int bytes;
                 String line;
+
+                bytes = in.read(buffer);
+                name = new String(buffer, StandardCharsets.UTF_8);
+                System.out.println(name + " has been assigned");
+
                 //while buffer read from client is not -1 size
                 while ((bytes = in.read(buffer)) != -1) {
                     //keep reading input and output to the server
