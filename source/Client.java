@@ -17,9 +17,8 @@ class Client {
             try (Socket socket = new Socket(IP, 5000)) {
 
                 //assign the byte input and output streams for the server
-                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                DataInputStream in = new DataInputStream(socket.getInputStream());
-
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
                 String name = "";
                 while (name.isEmpty()) {
@@ -53,6 +52,7 @@ class Client {
     }
 
     void close(){}
+    
     private static class InputHandler implements Runnable {
         private final DataInputStream input;
         private String name;
