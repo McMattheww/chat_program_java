@@ -45,13 +45,28 @@ public class Server {
         }
     }
 
-    private static class ClientHandler implements Runnable {
-        private final Socket clientSocket;
+    public static class ClientHandler implements Runnable {
+        public final Socket clientSocket;
 
         //keep track of the client's socket during construction
         public ClientHandler(Socket socket)
         {
             this.clientSocket = socket;
+        }
+
+        private void broadcast(String message) {
+            for (ClientHandler client : clients) {
+                client.out.println(message);
+            }
+        }
+
+        private void closeConnection() {
+            try {
+                clients.remove(this);
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         //method runs when the new thread is created
@@ -60,48 +75,27 @@ public class Server {
             InputStream in = null;
             OutputStream out = null;
             String name;
+            String message;
             try {
-                //get client input/output byte streams
-                in = clientSocket.getInputStream();
-                out = clientSocket.getOutputStream();
+                //create client IO streams
+                in = new BufferReader(new InputStreamReader(clientSocket.getInputStream()));
+                out = new PrintWriter(clientSocket.getOutputStream());
 
-                //create buffer to receive input from client
-                byte[] buffer = new byte[1024];
-                int bytes;
-                String line;
-
-                bytes = in.read(buffer);
-                name = new String(buffer, StandardCharsets.UTF_8);
+                name = in.readLine();
                 System.out.println(name + " has been assigned");
 
-                buffer = new byte[1024];
-                //while buffer read from client is not -1 size
-                while ((bytes = in.read(buffer)) != -1) {
-                    //keep reading input and output to the server
 
-                    line = new String(buffer, StandardCharsets.UTF_8);
-                    System.out.println(line);
-                    buffer = new byte[1024];
-                    //TODO: instead of printing input from clients to the terminal, the input should be redirected
-                    // to the output of every active client socket
+                while ((message = in.readLine()) != null) {
+                    
+                    broadcast(name + ": " + message);
+                
                 }
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
             finally {
-                try {
-                    if (out != null){
-                        out.close();
-                    }
-                    if (in != null) {
-                        in.close();
-                        clientSocket.close();
-                    }
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+                closeConnection();
             }
         }
     }
