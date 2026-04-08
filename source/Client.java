@@ -3,74 +3,77 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-
 class Client {
 
-    public static void main(String[] args)
-    {
-        //try connecting to server, for now the server is limited to one on localhost
-        try (Socket socket = new Socket("localhost", 8888)) {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
-            //assign the byte input and output streams for the server
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            DataInputStream in = new DataInputStream(socket.getInputStream());
+        while (true) {
+            System.out.println("Enter IP address of chat server to connect to: ");
+            String IP = sc.nextLine();
+            if (Objects.equals(IP, "quit")){break;}
+            //try connecting to server,
+            System.out.println("Connecting to server at " + IP);
+            try (Socket socket = new Socket(IP, 8888)) {
 
-            Scanner sc = new Scanner(System.in);
-            String name = "";
-            while (name.isEmpty()){
-                System.out.println("Enter Name:");
-                name = sc.nextLine();
+                //assign the byte input and output streams for the server
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                DataInputStream in = new DataInputStream(socket.getInputStream());
+
+
+                String name = "";
+                while (name.isEmpty()) {
+                    System.out.println("Enter Name:");
+                    name = sc.nextLine();
+                }
+                System.out.println("Welcome " + name);
+                //send the client's name to the server
+                out.write(name.getBytes(StandardCharsets.UTF_8));
+                out.flush();
+
+                //create outputHandler and start thread to handle output to server
+                InputHandler inputHandler = new InputHandler(in);
+                new Thread(inputHandler).start();
+
+                String line = sc.nextLine();
+                while (!"quit".equalsIgnoreCase(line)) {
+                    //get next line of input, send to server as bytes
+                    out.write(line.getBytes(StandardCharsets.UTF_8));
+                    out.flush();
+                    line = sc.nextLine();
+                }
+                socket.close();
+                break;
+            }//error connecting to server
+            catch (IOException e){
+                System.out.println("Error connecting to server at " + IP);
             }
-            System.out.println("Welcome " + name);
-            //send the client's name to the server
-            out.write(name.getBytes(StandardCharsets.UTF_8));
-            out.flush();
-
-            //create outputHandler and start thread to handle output to server
-            OutputHandler outputHandler = new OutputHandler(out, sc);
-            new Thread(outputHandler).start();
-
-            //variables to hold the buffer
-            byte[] buffer = new byte[2048];
-            int bytes;
-
-            //read bytes to display incoming chat messages in infinite loop
-            while ((bytes = in.read(buffer)) != -1) {
-                System.out.println(Arrays.toString(buffer));
-            }
-
-        }//error connecting to server
-        catch (IOException e) {
-            e.printStackTrace();
         }
+        sc.close();
     }
 
-    private static class OutputHandler implements Runnable {
-        private final DataOutputStream output;
-        Scanner sc;
+    void close(){}
+    private static class InputHandler implements Runnable {
+        private final DataInputStream input;
         private String name;
 
-        public OutputHandler(DataOutputStream out, Scanner scan){
-            this.output = out;
-            this.sc = scan;
-        }
+        public InputHandler(DataInputStream in){this.input = in;}
 
         public void run(){
-            //keep getting input from user in loop, then send to output
+            byte[] buffer = new byte[2048]; int bytes;
 
-
-            String line;
+            //read bytes to display incoming chat messages
             try {
-                //while the user does not type "quit"
-                while (!Objects.equals(line = sc.nextLine(), "quit")) {
-                    //get next line of input, send to server as bytes
-                    output.write(line.getBytes(StandardCharsets.UTF_8));
-                    output.flush();
+                while ((bytes = input.read(buffer)) != -1) {
+                    System.out.println(Arrays.toString(buffer));
+                    buffer = new byte[2048];
                 }
+            } catch (IOException e) {
+
             }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+
         }
+
     }
+
 }

@@ -72,11 +72,14 @@ public class Server {
                 name = new String(buffer, StandardCharsets.UTF_8);
                 System.out.println(name + " has been assigned");
 
+                buffer = new byte[1024];
                 //while buffer read from client is not -1 size
                 while ((bytes = in.read(buffer)) != -1) {
                     //keep reading input and output to the server
+
                     line = new String(buffer, StandardCharsets.UTF_8);
                     System.out.println(line);
+                    buffer = new byte[1024];
                     //TODO: instead of printing input from clients to the terminal, the input should be redirected
                     // to the output of every active client socket
                 }
