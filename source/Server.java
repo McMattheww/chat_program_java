@@ -5,11 +5,12 @@ import java.util.*;
 
 public class Server {
 
+    static List<ClientHandler> clients;
     public static void main (String[] args){
 
         //start the server on port 5000
         ServerSocket server = null;
-        List<ClientHandler> clients = new ArrayList<>();
+        clients = new ArrayList<>();
         try {
             server = new ServerSocket(5000);
             server.setReuseAddress(true);
@@ -19,12 +20,12 @@ public class Server {
                 //accept client connection and create socket
                 Socket clientSock = server.accept();
                 //print connected host info
-                System.out.println("New client connected" + client.getInetAddress().getHostAddress());
+                System.out.println("New client connected" + clientSock.getInetAddress().getHostAddress());
 
                 //create a new clientHandler object and create new thread for it
                 ClientHandler client = new ClientHandler(clientSock);
                 clients.add(client);
-                new Thread(clientSock).start();
+                new Thread(client).start();
             }
         }
         //error starting the server
@@ -47,6 +48,8 @@ public class Server {
 
     public static class ClientHandler implements Runnable {
         public final Socket clientSocket;
+        PrintWriter out;
+
 
         //keep track of the client's socket during construction
         public ClientHandler(Socket socket)
@@ -63,7 +66,7 @@ public class Server {
         private void closeConnection() {
             try {
                 clients.remove(this);
-                socket.close();
+                clientSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -72,23 +75,25 @@ public class Server {
         //method runs when the new thread is created
         public void run(){
 
-            InputStream in = null;
-            OutputStream out = null;
             String name;
             String message;
+            BufferedReader in = null;
+            PrintWriter out = null;
             try {
                 //create client IO streams
-                in = new BufferReader(new InputStreamReader(clientSocket.getInputStream()));
-                out = new PrintWriter(clientSocket.getOutputStream());
+                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                this.out = new PrintWriter(clientSocket.getOutputStream(), true);
 
+                //wait for client to send their username
                 name = in.readLine();
                 System.out.println(name + " has been assigned");
 
-
+                //wait for messages in a loop, broadcast rto other clients
                 while ((message = in.readLine()) != null) {
-                    
                     broadcast(name + ": " + message);
-                
+                    for (ClientHandler client : clients) {
+                        client.out.println(message);
+                    }
                 }
             }
             catch (IOException e) {

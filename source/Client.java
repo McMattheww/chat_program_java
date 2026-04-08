@@ -8,39 +8,45 @@ class Client {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        while (true) {
+
+        while (true) {  //prompt user to enter IP of the chat server they want to connect to
             System.out.println("Enter IP address of chat server to connect to: ");
             String IP = sc.nextLine();
-            if (Objects.equals(IP, "quit")){break;}
-            //try connecting to server,
+
+            //if user types "quit" instead of an IP, exit program
+            if (IP.equalsIgnoreCase("quit")){break;}
+
+            //try connecting to server
             System.out.println("Connecting to server at " + IP);
             try (Socket socket = new Socket(IP, 5000)) {
 
-                //assign the byte input and output streams for the server
+                //assign input and output streams for the server to accept strings
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
+                //get client's username
                 String name = "";
                 while (name.isEmpty()) {
                     System.out.println("Enter Name:");
                     name = sc.nextLine();
                 }
                 System.out.println("Welcome " + name);
-                //send the client's name to the server
-                out.write(name.getBytes(StandardCharsets.UTF_8));
-                out.flush();
+                //send username to server
+                out.println(name);
 
-                //create outputHandler and start thread to handle output to server
+
+                //create inputHandler and start thread to handle input from server
                 InputHandler inputHandler = new InputHandler(in);
                 new Thread(inputHandler).start();
 
+                // get user input and send to server, until the user types "quit"
                 String line = sc.nextLine();
                 while (!"quit".equalsIgnoreCase(line)) {
-                    //get next line of input, send to server as bytes
-                    out.write(line.getBytes(StandardCharsets.UTF_8));
-                    out.flush();
+                    //get next line of input, send to server
+                    out.println(line);
                     line = sc.nextLine();
                 }
+                //user has typed quit, close socket, exit program
                 socket.close();
                 break;
             }//error connecting to server
@@ -54,19 +60,19 @@ class Client {
     void close(){}
     
     private static class InputHandler implements Runnable {
-        private final DataInputStream input;
-        private String name;
+        public final BufferedReader input;
+        public String name;
 
-        public InputHandler(DataInputStream in){this.input = in;}
+        public InputHandler(BufferedReader in){this.input = in;}
 
         public void run(){
-            byte[] buffer = new byte[2048]; int bytes;
 
-            //read bytes to display incoming chat messages
+
+            //read and display incoming chat messages
+            String message;
             try {
-                while ((bytes = input.read(buffer)) != -1) {
-                    System.out.println(Arrays.toString(buffer));
-                    buffer = new byte[2048];
+                while ((message = input.readLine()) != null) {
+                    System.out.println(message);
                 }
             } catch (IOException e) {
 
