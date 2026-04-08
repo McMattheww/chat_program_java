@@ -2,10 +2,12 @@
 
 ## Features implemented:
 ### Client:
-* Upon program start, the client attempts to connect to the chat server on the same host
-* The client prompts the user to enter their name, and sends the name to the server
-* The client listens for input from the server, and prints it to terminal
-* The client creates another thread that waits for user input from the terminal, and sends it to the server
+* Upon client start, the user is prompted to enter an IP address
+* The client will attempt to connect to a chat server at the IP address
+* If a connection is not successfull, the user is promted to enter a new IP
+* Upon connection to a chat server the client prompts the user to enter their name, and sends the name to the server
+* The client then listens for input from the user, and sends it to the server. Typing quit exits the program.
+* The client creates another thread that waits for input from the server, and prints it to the terminal.
 
 ### Server:
 * Once started listens for conenctions on port 8888
@@ -15,7 +17,7 @@
 
 ## Todo:
 ### Client:
-* allow the clients to choose an IP address, and connect to a chat server that is not on localhost
+*
 
 ### Server:
 * Server should have a data structure to track current active connection sockets
