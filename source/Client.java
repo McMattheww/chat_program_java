@@ -14,7 +14,7 @@ class Client {
             if (Objects.equals(IP, "quit")){break;}
             //try connecting to server,
             System.out.println("Connecting to server at " + IP);
-            try (Socket socket = new Socket(IP, 8888)) {
+            try (Socket socket = new Socket(IP, 5000)) {
 
                 //assign the byte input and output streams for the server
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
