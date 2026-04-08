@@ -9,6 +9,7 @@ public class Server {
 
         //start the server on port 5000
         ServerSocket server = null;
+        List<ClientHandler> clients = new ArrayList<>();
         try {
             server = new ServerSocket(5000);
             server.setReuseAddress(true);
@@ -22,6 +23,7 @@ public class Server {
 
                 //create a new clientHandler object and create new thread for it
                 ClientHandler clientSock = new ClientHandler(client);
+                clients.add(client);
                 new Thread(clientSock).start();
             }
         }
