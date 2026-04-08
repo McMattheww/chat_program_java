@@ -17,12 +17,12 @@ public class Server {
             //endless loop while server is running
             while (true){
                 //accept client connection and create socket
-                Socket client = server.accept();
+                Socket clientSock = server.accept();
                 //print connected host info
                 System.out.println("New client connected" + client.getInetAddress().getHostAddress());
 
                 //create a new clientHandler object and create new thread for it
-                ClientHandler clientSock = new ClientHandler(client);
+                ClientHandler client = new ClientHandler(clientSock);
                 clients.add(client);
                 new Thread(clientSock).start();
             }
