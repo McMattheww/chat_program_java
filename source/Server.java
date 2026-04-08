@@ -7,10 +7,10 @@ public class Server {
 
     public static void main (String[] args){
 
-        //start the server on port 8888
+        //start the server on port 5000
         ServerSocket server = null;
         try {
-            server = new ServerSocket(8888);
+            server = new ServerSocket(5000);
             server.setReuseAddress(true);
 
             //endless loop while server is running
