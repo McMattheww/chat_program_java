@@ -91,9 +91,6 @@ public class Server {
                 //wait for messages in a loop, broadcast rto other clients
                 while ((message = in.readLine()) != null) {
                     broadcast(name + ": " + message);
-                    for (ClientHandler client : clients) {
-                        client.out.println(message);
-                    }
                 }
             }
             catch (IOException e) {
