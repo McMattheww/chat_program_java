@@ -26,6 +26,7 @@ public class Server {
                 ClientHandler client = new ClientHandler(clientSock);
                 clients.add(client);
                 new Thread(client).start();
+                broadcast(name + "has joined the chat!");
             }
         }
         //error starting the server
@@ -38,6 +39,7 @@ public class Server {
                 try {
                     //close server if it was successfully opened
                     server.close();
+                    broadcast(name + "has left the chat.");
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -59,7 +61,11 @@ public class Server {
 
         private void broadcast(String message) {
             for (ClientHandler client : clients) {
-                client.out.println(message);
+                try{
+                    client.out.println(message);
+                } catch (Exception e) {
+
+                }
             }
         }
 
@@ -98,6 +104,8 @@ public class Server {
             }
             finally {
                 closeConnection();
+                in.close();
+                out.close();
             }
         }
     }

@@ -41,10 +41,10 @@ class Client {
 
                 // get user input and send to server, until the user types "quit"
                 String line = sc.nextLine();
-                while (!"quit".equalsIgnoreCase(line)) {
-                    //get next line of input, send to server
+                while (true) { // previous version was buggy
+                    String line = sc.nextLine();
+                    if ("quit".equalsIgnoreCase(line)) break;
                     out.println(line);
-                    line = sc.nextLine();
                 }
                 //user has typed quit, close socket, exit program
                 socket.close();
@@ -75,7 +75,7 @@ class Client {
                     System.out.println(message);
                 }
             } catch (IOException e) {
-
+                System.out.println("Connection Lost. Check the server.")
             }
 
         }
