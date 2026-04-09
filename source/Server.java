@@ -6,6 +6,18 @@ import java.util.*;
 public class Server {
 
     static List<ClientHandler> clients;
+
+    private static void broadcast(String message) {
+        for (ClientHandler client : clients) {
+            try{
+                client.out.println(message);
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+
     public static void main (String[] args){
 
         //start the server on port 5000
@@ -26,7 +38,8 @@ public class Server {
                 ClientHandler client = new ClientHandler(clientSock);
                 clients.add(client);
                 new Thread(client).start();
-                broadcast(name + "has joined the chat!");
+
+
             }
         }
         //error starting the server
@@ -39,7 +52,9 @@ public class Server {
                 try {
                     //close server if it was successfully opened
                     server.close();
-                    broadcast(name + "has left the chat.");
+
+                    //
+                    //broadcast(name + "has left the chat.");
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -51,6 +66,9 @@ public class Server {
     public static class ClientHandler implements Runnable {
         public final Socket clientSocket;
         PrintWriter out;
+        BufferedReader in;
+        String name;
+
 
 
         //keep track of the client's socket during construction
@@ -59,19 +77,12 @@ public class Server {
             this.clientSocket = socket;
         }
 
-        private void broadcast(String message) {
-            for (ClientHandler client : clients) {
-                try{
-                    client.out.println(message);
-                } catch (Exception e) {
-
-                }
-            }
-        }
 
         private void closeConnection() {
             try {
                 clients.remove(this);
+                in.close();
+                out.close();
                 clientSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -81,18 +92,18 @@ public class Server {
         //method runs when the new thread is created
         public void run(){
 
-            String name;
+            name = "";
             String message;
-            BufferedReader in = null;
-            PrintWriter out = null;
+
             try {
                 //create client IO streams
-                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+                this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 //wait for client to send their username
                 name = in.readLine();
                 System.out.println(name + " has been assigned");
+                broadcast(name + " has joined the chat!");
 
                 //wait for messages in a loop, broadcast rto other clients
                 while ((message = in.readLine()) != null) {
@@ -103,9 +114,9 @@ public class Server {
                 e.printStackTrace();
             }
             finally {
+
                 closeConnection();
-                in.close();
-                out.close();
+
             }
         }
     }
