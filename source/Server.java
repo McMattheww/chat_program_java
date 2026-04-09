@@ -53,8 +53,7 @@ public class Server {
                     //close server if it was successfully opened
                     server.close();
 
-                    //
-                    //broadcast(name + "has left the chat.");
+
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -80,6 +79,7 @@ public class Server {
 
         private void closeConnection() {
             try {
+                broadcast(name + " has left the chat.");
                 clients.remove(this);
                 in.close();
                 out.close();
