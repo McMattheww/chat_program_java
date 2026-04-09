@@ -40,9 +40,9 @@ class Client {
                 new Thread(inputHandler).start();
 
                 // get user input and send to server, until the user types "quit"
-                String line = sc.nextLine();
+                String line;
                 while (true) { // previous version was buggy
-                    String line = sc.nextLine();
+                    line = sc.nextLine();
                     if ("quit".equalsIgnoreCase(line)) break;
                     out.println(line);
                 }
@@ -75,7 +75,7 @@ class Client {
                     System.out.println(message);
                 }
             } catch (IOException e) {
-                System.out.println("Connection Lost. Check the server.")
+                System.out.println("Connection Lost. Check the server.");
             }
 
         }
