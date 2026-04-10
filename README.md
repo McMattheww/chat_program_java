@@ -10,7 +10,7 @@
 * The client creates another thread that waits for input from the server, and prints it to the terminal.
 
 ### Server:
-* Once started listens for conenctions on port 8888
+* Once started listens for conenctions on port 5000
 * creates a new thread for each connected client
 * Threads get the username of connected clients
 * Threads then listen for input from the client until the connection is closed,
