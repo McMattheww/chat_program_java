@@ -6,6 +6,22 @@ import java.util.*;
 public class Server {
     static List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
 
+    private static void privateBroadcast(String targetName, String message, ClientHandler sender) {
+        synchronized (clients) {
+            for (ClientHandler client : clients) {
+                if (client.name != null && client.name.equalsIgnoreCase(targetName)) {
+                    client.out.println("(DM from " + sender.name + "): " + message);
+                    sender.out.println("(DM to" + targetName + "): " + message);
+                    return;
+                }
+            }
+        }
+        //user not found
+        sender.out.println("User '" + targetName + "' not found.");
+        
+    }
+
+
     private static void broadcast(String message) {
         synchronized (clients) {
             for (ClientHandler client : clients) {
@@ -114,8 +130,23 @@ public class Server {
                     
                     if (message.equalsIgnoreCase("/quit")) break;
 
-                    broadcast(name + ": " + message);
+                    if (message.startsWith("@")) {
+                        //finds index of where the name ends
+                        int spaceIndex = message.indexOf(" ");
 
+                        if (spaceIndex != -1) {
+                            //extract target
+                            String target = message.substring(1, spaceIndex);
+                            //extract message
+                            String dmMessage = message.substring(spaceIndex + 1);
+
+                            privateBroadcast(target, dmMessage, this);
+                        } else {
+                            out.println("Invalid DM format. Try @<username> <message>");
+                        }
+                    } else {
+                        broadcast(name + ": " + message);
+                    }
                 }
             }
             catch (IOException e) {
