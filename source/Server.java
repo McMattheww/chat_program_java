@@ -4,15 +4,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Server {
-
-    static List<ClientHandler> clients;
+    static List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
 
     private static void broadcast(String message) {
-        for (ClientHandler client : clients) {
-            try{
-                client.out.println(message);
-            } catch (Exception e) {
-
+        synchronized (clients) {
+            for (ClientHandler client : clients) {
+                try{
+                    client.out.println(message);
+                } catch (Exception e) {
+                    System.out.println("Failed to send message to a client");
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -22,7 +24,6 @@ public class Server {
 
         //start the server on port 5000
         ServerSocket server = null;
-        clients = new ArrayList<>();
         try {
             server = new ServerSocket(5000);
             server.setReuseAddress(true);
@@ -38,7 +39,6 @@ public class Server {
                 ClientHandler client = new ClientHandler(clientSock);
                 clients.add(client);
                 new Thread(client).start();
-
 
             }
         }
@@ -79,11 +79,14 @@ public class Server {
 
         private void closeConnection() {
             try {
-                broadcast(name + " has left the chat.");
                 clients.remove(this);
-                in.close();
-                out.close();
-                clientSocket.close();
+                broadcast(name + " has left the chat.");
+                System.out.println(name + " has been unassigned.");
+
+                if (in != null) in.close();
+                if (out != null) out.close();
+                if (clientSocket != null) clientSocket.close();
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -102,12 +105,17 @@ public class Server {
 
                 //wait for client to send their username
                 name = in.readLine();
+                if (name == null) return; //client disconnected
                 System.out.println(name + " has been assigned");
                 broadcast(name + " has joined the chat!");
 
                 //wait for messages in a loop, broadcast rto other clients
                 while ((message = in.readLine()) != null) {
+                    
+                    if (message.equalsIgnoreCase("/quit")) break;
+
                     broadcast(name + ": " + message);
+
                 }
             }
             catch (IOException e) {

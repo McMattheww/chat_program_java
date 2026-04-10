@@ -30,6 +30,7 @@ class Client {
                     System.out.println("Enter Name:");
                     name = sc.nextLine();
                 }
+
                 System.out.println("Welcome " + name);
                 //send username to server
                 out.println(name);
@@ -43,7 +44,12 @@ class Client {
                 String line;
                 while (true) { // previous version was buggy
                     line = sc.nextLine();
-                    if ("quit".equalsIgnoreCase(line)) break;
+
+                    if ("quit".equalsIgnoreCase(line)){
+                        out.println("/quit"); 
+                        break;
+                    }
+
                     out.println(line);
                 }
                 //user has typed quit, close socket, exit program
@@ -74,8 +80,14 @@ class Client {
                 while ((message = input.readLine()) != null) {
                     System.out.println(message);
                 }
+
+                //fixed server death here. 
+                System.out.println("Server disconnected. Exiting...");
+                System.exit(0);
+
             } catch (IOException e) {
-                System.out.println("Connection Lost. Check the server.");
+                System.out.println("Connection Lost. Exiting...");
+                System.exit(0);
             }
 
         }
