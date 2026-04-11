@@ -11,7 +11,7 @@ public class Server {
             for (ClientHandler client : clients) {
                 if (client.name != null && client.name.equalsIgnoreCase(targetName)) {
                     client.out.println("(DM from " + sender.name + "): " + message);
-                    sender.out.println("(DM to" + targetName + "): " + message);
+                    sender.out.println("(DM to " + targetName + "): " + message);
                     return;
                 }
             }
@@ -22,14 +22,16 @@ public class Server {
     }
 
 
-    private static void broadcast(String message) {
+    private static void broadcast(String message, ClientHandler sender) {
         synchronized (clients) {
             for (ClientHandler client : clients) {
-                try{
-                    client.out.println(message);
-                } catch (Exception e) {
-                    System.out.println("Failed to send message to a client");
-                    e.printStackTrace();
+                if (client != sender) {
+                    try{
+                        client.out.println(message);
+                    } catch (Exception e) {
+                        System.out.println("Failed to send message to a client");
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -49,7 +51,7 @@ public class Server {
                 //accept client connection and create socket
                 Socket clientSock = server.accept();
                 //print connected host info
-                System.out.println("New client connected" + clientSock.getInetAddress().getHostAddress());
+                System.out.println("New client connected " + clientSock.getInetAddress().getHostAddress());
 
                 //create a new clientHandler object and create new thread for it
                 ClientHandler client = new ClientHandler(clientSock);
@@ -96,7 +98,7 @@ public class Server {
         private void closeConnection() {
             try {
                 clients.remove(this);
-                broadcast(name + " has left the chat.");
+                broadcast(name + " has left the chat.", this);
                 System.out.println(name + " has been unassigned.");
 
                 if (in != null) in.close();
@@ -123,7 +125,7 @@ public class Server {
                 name = in.readLine();
                 if (name == null) return; //client disconnected
                 System.out.println(name + " has been assigned");
-                broadcast(name + " has joined the chat!");
+                broadcast(name + " has joined the chat!", this);
 
                 //wait for messages in a loop, broadcast rto other clients
                 while ((message = in.readLine()) != null) {
@@ -145,7 +147,7 @@ public class Server {
                             out.println("Invalid DM format. Try @<username> <message>");
                         }
                     } else {
-                        broadcast(name + ": " + message);
+                        broadcast(name + ": " + message, this);
                     }
                 }
             }
