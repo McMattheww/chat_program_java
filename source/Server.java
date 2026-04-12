@@ -6,6 +6,24 @@ import java.util.*;
 public class Server {
     static List<ClientHandler> clients = Collections.synchronizedList(new ArrayList<>());
 
+    private static String checkEmojis(String message) {
+        Map<String, String> emojis = new HashMap<>();
+
+        emojis.put(":thumbsup:", "\uD83D\uDC4D");
+        emojis.put(":smile:", "\uD83D\uDE04");
+        emojis.put(":heart:", "\u2764\uFE0F");
+        emojis.put(":laugh:", "\uD83D\uDE06");
+        emojis.put(":sad:", "\uD83D\uDE1E");
+        emojis.put(":fire:", "\uD83D\uDD25");
+
+        for (String key : emojis.keySet()) {
+            message = message.replace(key, emojis.get(key));
+        }
+
+        return message;
+
+    }
+
     private static void privateBroadcast(String targetName, String message, ClientHandler sender) {
         synchronized (clients) {
             for (ClientHandler client : clients) {
@@ -25,13 +43,11 @@ public class Server {
     private static void broadcast(String message, ClientHandler sender) {
         synchronized (clients) {
             for (ClientHandler client : clients) {
-                if (client != sender) {
-                    try{
-                        client.out.println(message);
-                    } catch (Exception e) {
-                        System.out.println("Failed to send message to a client");
-                        e.printStackTrace();
-                    }
+                try{
+                    client.out.println(message);
+                } catch (Exception e) {
+                    System.out.println("Failed to send message to a client");
+                    e.printStackTrace();
                 }
             }
         }
@@ -131,6 +147,8 @@ public class Server {
                 while ((message = in.readLine()) != null) {
                     
                     if (message.equalsIgnoreCase("/quit")) break;
+
+                    message = checkEmojis(message);
 
                     if (message.startsWith("@")) {
                         //finds index of where the name ends

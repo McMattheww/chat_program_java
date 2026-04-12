@@ -79,20 +79,27 @@ class Client {
             //read and display incoming chat messages
             String message;
             try {
+
+
                 while ((message = input.readLine()) != null) {
                     System.out.println(message);
                 }
+
+
                 // fixed server death here.
                 // Matthew note- because the GUI client allows for reconnection after a lost connection,
                 // I removed the system.exit statements, and instead just ensured the socket is closed
-                System.out.println("Server disconnected. Exiting...");
+
+                // Rylan note - I tried reconnecting and it didn't work. :(
+
+                System.out.println("Server disconnected. Attempting to reconnect... (type 'quit' to exit)");
                 try {
 
                     if (socket != null && socket.isConnected()) {
                         socket.close();
                     }
                 } catch (IOException e) {
-                    System.out.println("Error closing connection with server ");
+                    System.out.println("Something unexpected happened (Exception)");
                 }
             } catch (IOException e) {
                 System.out.println("Connection Lost. Exiting...");
@@ -101,7 +108,7 @@ class Client {
                         socket.close();
                     }
                 } catch (IOException e2) {
-                    System.out.println("Error closing connection with server ");
+                    System.out.println("Something unexpected happened (Exception)");
                 }
             }
 
