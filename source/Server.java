@@ -16,6 +16,55 @@ public class Server {
         emojis.put(":sad:", "\uD83D\uDE1E");
         emojis.put(":fire:", "\uD83D\uDD25");
 
+        emojis.put(":grin:", "\uD83D\uDE01");
+        emojis.put(":wink:", "\uD83D\uDE09");
+        emojis.put(":cry:", "\uD83D\uDE22");
+        emojis.put(":angry:", "\uD83D\uDE20");
+        emojis.put(":surprised:", "\uD83D\uDE2E");
+        emojis.put(":cool:", "\uD83D\uDE0E");
+        emojis.put(":kiss:", "\uD83D\uDE18");
+
+        emojis.put(":thinking:", "\uD83E\uDD14");
+        emojis.put(":clap:", "\uD83D\uDC4F");
+        emojis.put(":ok:", "\uD83D\uDC4C");
+        emojis.put(":wave:", "\uD83D\uDC4B");
+        emojis.put(":pray:", "\uD83D\uDE4F");
+        emojis.put(":muscle:", "\uD83D\uDCAA");
+        emojis.put(":eyes:", "\uD83D\uDC40");
+
+        emojis.put(":skull:", "\uD83D\uDC80");
+        emojis.put(":poop:", "\uD83D\uDCA9");
+        emojis.put(":ghost:", "\uD83D\uDC7B");
+        emojis.put(":alien:", "\uD83D\uDC7D");
+        emojis.put(":robot:", "\uD83E\uDD16");
+        emojis.put(":cat:", "\uD83D\uDC31");
+        emojis.put(":dog:", "\uD83D\uDC36");
+        emojis.put(":unicorn:", "\uD83E\uDD84");
+        emojis.put(":dragon:", "\uD83D\uDC09");
+        emojis.put(":pizza:", "\uD83C\uDF55");
+
+        emojis.put(":burger:", "\uD83C\uDF54");
+        emojis.put(":fries:", "\uD83C\uDF5F");
+        emojis.put(":coffee:", "\u2615");
+        emojis.put(":beer:", "\uD83C\uDF7A");
+        emojis.put(":cake:", "\uD83C\uDF70");
+        emojis.put(":gift:", "\uD83C\uDF81");
+        emojis.put(":balloon:", "\uD83C\uDF88");
+        emojis.put(":star:", "\u2B50");
+        emojis.put(":sparkles:", "\u2728");
+        emojis.put(":sun:", "\u2600\uFE0F");
+
+        emojis.put(":moon:", "\uD83C\uDF19");
+        emojis.put(":cloud:", "\u2601\uFE0F");
+        emojis.put(":rainbow:", "\uD83C\uDF08");
+        emojis.put(":snowman:", "\u2603\uFE0F");
+        emojis.put(":zap:", "\u26A1");
+        emojis.put(":check:", "\u2705");
+        emojis.put(":cross:", "\u274C");
+        emojis.put(":question:", "\u2753");
+        emojis.put(":exclamation:", "\u2757");
+        emojis.put(":lock:", "\uD83D\uDD12");
+
         for (String key : emojis.keySet()) {
             message = message.replace(key, emojis.get(key));
         }
