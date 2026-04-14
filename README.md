@@ -1,13 +1,24 @@
 # chat_program_java
 
+## How to Run:
+### Server:
+compile javac Server.java
+run java Server
+
+### GUI Client:
+compile javac Client.java
+compile javac ClientGUI.java
+run java ClientGUI
+
+
+
 ## Features implemented:
 ### Client:
-* Upon client start, the user is prompted to enter an IP address
+* Client can hit "new connection" button in the file menu to initiate a conenction to a chat server using a username and IP
 * The client will attempt to connect to a chat server at the IP address
-* If a connection is not successfull, the user is promted to enter a new IP
-* Upon connection to a chat server, the client prompts the user to enter their name, and sends the name to the server
-* The client then listens for input from the user, and sends it to the server. Typing quit exits the program.
-* The client creates another thread that waits for input from the server, and prints it to the terminal.
+* If a connection is not successfull, the client is notified and allowed to try again
+* Upon connection to a chat server, a thread is created so messages broadcast from the server are printed to the GUI output area
+* The client then is also able to put messages in the input area, and hit the send button to send the message to the server
 
 ### Server:
 * Once started listens for conenctions on port 5000
@@ -15,13 +26,6 @@
 * Threads get the username of connected clients
 * Threads then listen for input from the client until the connection is closed,
 * Threads transmit input recieved from their client to every active client, and append username
-
-## Todo:
-All core functionalities are implemented, further todos are extra credit
-### Client:
-* GUI
-* emojis
-
-### Server:
-*
+* messages in the format @<username> <message> are treated as direct messages, and only sent to the specified client
+* parts in the message in the format :emoji_name: have emojis inserted into the message
 
