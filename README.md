@@ -2,13 +2,13 @@
 
 ## How to Run:
 ### Server:
-compile javac Server.java
-run java Server
+*compile javac Server.java
+*run java Server
 
 ### GUI Client:
-compile javac Client.java
-compile javac ClientGUI.java
-run java ClientGUI
+*compile javac Client.java
+*compile javac ClientGUI.java
+*run java ClientGUI
 
 
 
