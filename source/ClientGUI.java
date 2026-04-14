@@ -16,7 +16,7 @@ public class ClientGUI extends JFrame implements ActionListener{
     /** text fields and submit button  */
     JTextArea outputArea;
     JScrollPane scrollPane;
-    JTextField inputArea;
+    JTextArea inputArea;
     JButton submitButton;
 
     /** menu items */
@@ -51,13 +51,15 @@ public class ClientGUI extends JFrame implements ActionListener{
 
         //setup text areas and buttons
         submitButton = new JButton("Send");
-        inputArea = new JTextField();
+        inputArea = new JTextArea();
         outputArea = new JTextArea();
         outputArea.setEditable(false);
         scrollPane = new JScrollPane(outputArea);
         scrollPane.setMinimumSize(new Dimension(200, 150));
         inputArea.setFont(new Font("Arial", Font.PLAIN, 16));
         outputArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        outputArea.setLineWrap(true);
+        inputArea.setLineWrap(true);
 
 
         //setup custom print stream to redirect console output to the text display area
